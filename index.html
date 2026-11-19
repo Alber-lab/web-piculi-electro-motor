@@ -241,8 +241,49 @@
             <!-- Visual / Feature Card Column -->
             <div class="lg:col-span-5 flex flex-col gap-space-sm">
               <div class="bg-surface-container rounded p-space-md shadow-sm relative overflow-hidden">
-                <img src="TALLER_BOBINA.jpg" alt="Mostrador y tienda física Piculi Electro Motor"
-                  class="w-full h-64 rounded object-cover mb-space-sm">
+                <!-- Carrusel en la imagen superior (h-64) manteniendo el tamaño y estética -->
+                <div id="nosotros-slider"
+                  class="relative w-full h-64 rounded overflow-hidden mb-space-sm group bg-surface-container-highest">
+
+                  <div class="nosotros-slide absolute inset-0 w-full h-full transition-opacity duration-500 opacity-100">
+                    <img src="TALLER_BOBINA.jpg" alt="Zona de bobinado y taller Piculi Electro Motor"
+                      class="w-full h-full object-cover">
+                  </div>
+
+                  <div
+                    class="nosotros-slide absolute inset-0 w-full h-full transition-opacity duration-500 opacity-0 pointer-events-none">
+                    <img src="FURGONETA.jpg" alt="Instalaciones y taller Piculi Electro Motor"
+                      class="w-full h-full object-cover">
+                  </div>
+
+                  <div
+                    class="nosotros-slide absolute inset-0 w-full h-full transition-opacity duration-500 opacity-0 pointer-events-none">
+                    <img src="TALLER.jpg" alt="Banco de pruebas y diagnosis en taller"
+                      class="w-full h-full object-cover">
+                  </div>
+
+                  <!-- Botón anterior -->
+                  <button id="nosotros-prev" type="button" aria-label="Imagen anterior"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded bg-primary/75 hover:bg-primary text-white flex items-center justify-center transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                  </button>
+
+                  <!-- Botón siguiente -->
+                  <button id="nosotros-next" type="button" aria-label="Imagen siguiente"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded bg-primary/75 hover:bg-primary text-white flex items-center justify-center transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                  </button>
+
+                  <!-- Puntos indicadores -->
+                  <div class="absolute bottom-2 inset-x-0 flex items-center justify-center gap-1.5 z-10">
+                    <button type="button" aria-label="Diapositiva 1"
+                      class="nosotros-dot w-2.5 h-2.5 rounded-full bg-white shadow transition-opacity opacity-100 cursor-pointer"></button>
+                    <button type="button" aria-label="Diapositiva 2"
+                      class="nosotros-dot w-2.5 h-2.5 rounded-full bg-white shadow transition-opacity opacity-50 cursor-pointer"></button>
+                    <button type="button" aria-label="Diapositiva 3"
+                      class="nosotros-dot w-2.5 h-2.5 rounded-full bg-white shadow transition-opacity opacity-50 cursor-pointer"></button>
+                  </div>
+                </div>
                 <div class="flex items-center justify-between pb-space-xs">
                   <span class="font-headline-sm text-headline-sm text-primary">Instalaciones y Taller</span>
 
@@ -339,6 +380,12 @@
 
                   <div class="mini-slide absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-500 opacity-0 pointer-events-none"
                     style="background-image: url('MOTOR_ELECTRICO_INDUSTRIAL_2.jpg')"></div>
+
+                  <div class="mini-slide absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-500 opacity-0 pointer-events-none"
+                    style="background-image: url('MOTOR_ELECTRICO_INDUSTRIAL_3.jpg')"></div>
+
+                  <div class="mini-slide absolute inset-0 w-full h-full bg-cover bg-center transition-opacity duration-500 opacity-0 pointer-events-none"
+                    style="background-image: url('MOTOR_ELECTRICO_INDUSTRIAL_4.jpg')"></div>
 
                   <!-- Botón anterior -->
                   <button type="button" aria-label="Imagen anterior"
@@ -1439,6 +1486,76 @@
 
       startAutoplay();
     });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.getElementById("nosotros-slider");
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll(".nosotros-slide");
+    const dots = slider.querySelectorAll(".nosotros-dot");
+    const prevBtn = document.getElementById("nosotros-prev");
+    const nextBtn = document.getElementById("nosotros-next");
+    let currentIndex = 0;
+    let autoplayTimer = null;
+
+    function mostrarDiapositiva(index) {
+      currentIndex = (index + slides.length) % slides.length;
+
+      slides.forEach((slide, i) => {
+        const activa = i === currentIndex;
+        slide.classList.toggle("opacity-100", activa);
+        slide.classList.toggle("opacity-0", !activa);
+        slide.classList.toggle("pointer-events-none", !activa);
+      });
+
+      dots.forEach((dot, i) => {
+        const activa = i === currentIndex;
+        dot.classList.toggle("opacity-100", activa);
+        dot.classList.toggle("opacity-50", !activa);
+      });
+    }
+
+    function iniciarAutoplay() {
+      detenerAutoplay();
+      autoplayTimer = setInterval(() => {
+        mostrarDiapositiva(currentIndex + 1);
+      }, 4500);
+    }
+
+    function detenerAutoplay() {
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        mostrarDiapositiva(currentIndex - 1);
+        iniciarAutoplay();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        mostrarDiapositiva(currentIndex + 1);
+        iniciarAutoplay();
+      });
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => {
+        mostrarDiapositiva(i);
+        iniciarAutoplay();
+      });
+    });
+
+    slider.addEventListener("mouseenter", detenerAutoplay);
+    slider.addEventListener("mouseleave", iniciarAutoplay);
+
+    iniciarAutoplay();
   });
 </script>
 </body>
